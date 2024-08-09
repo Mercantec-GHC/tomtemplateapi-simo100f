@@ -1,0 +1,159 @@
+﻿@page "/Flag game"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<PageTitle>Flag game</PageTitle>
+
+<h1>Guess the country by flag</h1>
+
+@if (gameOver)
+{
+    <div class="gameover">
+        <p class="@gameOverCSS">@((MarkupString)gameOverText)</p>
+
+        <button class="restartButton" @onclick="ReloadPage">Restart</button>
+    </div>
+}
+
+@if (rightCountry != null)
+{
+    <div class="game">
+        <div class="header">
+            <p>@rightCountry.flag</p>
+        </div>
+        <div class="optionBox">
+            <button class="optionLeft" @onclick="(() => winCheck(0))">
+                <p>@optionNames[0]</p>
+            </button>
+            <button class="optionRight" @onclick="(() => winCheck(1))">
+                <p>@optionNames[1]</p>
+            </button>
+        </div>
+        <div class="optionBox">
+            <button class='optionLeft' @onclick="(() => winCheck(2))">
+                <p>@optionNames[2]</p>
+            </button>
+            <button class="optionRight" @onclick="(() => winCheck(3))">
+                <p>@optionNames[3]</p>
+            </button>
+        </div>
+    </div>
+}
+
+@if (countries != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Flag</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var country in countries)
+            {
+                <tr>
+                    <td>@country.name.common</td>
+                    <td style="font-size: 100px">@country.flag</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+<h1> guess the flag by country </h1>
+
+@code {
+    private List<Root>? countries;
+    private List<string> optionNames = new List<string>();
+    private List<string> placeHolderList = new List<string>();
+
+    private Root rightCountry;
+
+    public HttpClient client = new HttpClient();
+
+    private int countryIndex;
+
+    Random randIndex = new Random();
+
+    private bool gameOver = false;
+
+    private string gameOverText = "";
+
+    string gameOverCSS = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        string countryUrl = "https://restcountries.com/v3.1/all?fields=name,flag";
+
+        countries = await client.GetFromJsonAsync<List<Root>>(countryUrl);
+
+        countryIndex = randIndex.Next(0, countries.Count);
+
+        rightCountry = countries[countryIndex];
+
+        optionNames.Add(rightCountry.name.common);
+
+        while (optionNames.Count < 4)
+        {
+            countryIndex = randIndex.Next(0, countries.Count);
+
+            Root countryToAdd = countries[countryIndex];
+
+            if (optionNames.Contains(countryToAdd.name.common) == false)
+            {
+                optionNames.Add(countryToAdd.name.common);
+            }
+        }
+        while (optionNames.Count > 0)
+        {
+            countryIndex = randIndex.Next(0, optionNames.Count);
+
+            string countryToRandomize = optionNames[countryIndex];
+            if (countryToRandomize != null)
+            {
+                placeHolderList.Add(countryToRandomize);
+                optionNames.Remove(countryToRandomize);
+            }
+        }
+        optionNames = placeHolderList;
+    }
+
+    public void ReloadPage()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+    }
+
+    public void winCheck(int index)
+    {
+        if (optionNames[index] == rightCountry.name.common)
+        {
+            gameOverText = "YOU WIN";
+            gameOver = true;
+            gameOverCSS = "winText";
+        }
+        else
+        {
+            gameOverText = $"YOU LOSE <br> THE CORRECT ANSWER WAS: {rightCountry.name.common}";
+            gameOver = true;
+            gameOverCSS = "lossText";
+        }
+    }
+
+    public class Name
+    {
+        public string common { get; set; }
+    }
+
+    public class Root
+    {
+        public Name name { get; set; }
+        public string flag { get; set; }
+    }
+
+
+}

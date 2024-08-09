@@ -1,0 +1,68 @@
+﻿body {
+}
+
+.game {
+    margin: auto;
+    width: 500px;
+    border: 3px solid black;
+    padding-top: 10px;
+}
+
+.header {
+    text-align: center;
+    margin-top: 10px;
+    margin: auto;
+    width: 450px;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+    .header p {
+        margin: 0px;
+        font-size: 50px;
+    }
+
+.optionBox {
+    display: flex;
+    margin: auto;
+    width: 480px;
+    padding: 10px;
+    font-size: 100px;
+}
+
+.optionLeft {
+    margin: auto;
+    width: 220px;
+    border: 3px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+    .optionLeft p {
+        margin: 0px;
+    }
+
+.optionRight {
+    margin: auto;
+    width: 220px;
+    border: 3px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+    .optionRight p {
+        margin: 0px;
+    }
+
+.gameover {
+    text-align: center;
+    font-size: 75px;
+}
+
+.lossText {
+    color: red
+}
+
+.winText {
+    color: lawngreen
+}

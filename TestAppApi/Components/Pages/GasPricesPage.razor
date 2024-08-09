@@ -1,0 +1,45 @@
+﻿@page "/gas prices"
+@rendermode InteractiveServer
+
+<PageTitle>Gas prices</PageTitle>
+
+<h1>Gas prices</h1>
+
+@if (prices != null)
+{
+    <ApexChart TItem="GasPrices"
+               Title="Order Net Value"
+               XAxisType="XAxisType.Datetime">
+
+        <ApexPointSeries TItem="GasPrices"
+                         Items="prices"
+                         Name="Gas prices over time"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(gasPrices => gasPrices.Date)"
+                         YValue="@(gasPrices => gasPrices.price)"/>
+    </ApexChart>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    private GasPrices[]? prices;
+
+    public HttpClient client = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        string baseUrl = "https://magsapi.onrender.com/api/miles95";
+
+        prices = await client.GetFromJsonAsync<GasPrices[]>(baseUrl);
+    }
+
+    public class GasPrices
+    {
+        public DateOnly Date { get; set; }
+        public decimal price { get; set; }
+    }
+}

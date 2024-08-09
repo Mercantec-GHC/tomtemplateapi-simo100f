@@ -1,0 +1,68 @@
+body[b-2zxknl2shk] {
+}
+
+.game[b-2zxknl2shk] {
+    margin: auto;
+    width: 500px;
+    border: 3px solid black;
+    padding-top: 10px;
+}
+
+.header[b-2zxknl2shk] {
+    text-align: center;
+    margin-top: 10px;
+    margin: auto;
+    width: 450px;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+    .header p[b-2zxknl2shk] {
+        margin: 0px;
+        font-size: 50px;
+    }
+
+.optionBox[b-2zxknl2shk] {
+    display: flex;
+    margin: auto;
+    width: 480px;
+    padding: 10px;
+    font-size: 100px;
+}
+
+.optionLeft[b-2zxknl2shk] {
+    margin: auto;
+    width: 220px;
+    border: 3px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+    .optionLeft p[b-2zxknl2shk] {
+        margin: 0px;
+    }
+
+.optionRight[b-2zxknl2shk] {
+    margin: auto;
+    width: 220px;
+    border: 3px solid black;
+    text-align: center;
+    padding: 10px;
+}
+
+    .optionRight p[b-2zxknl2shk] {
+        margin: 0px;
+    }
+
+.gameover[b-2zxknl2shk] {
+    text-align: center;
+    font-size: 75px;
+}
+
+.lossText[b-2zxknl2shk] {
+    color: red
+}
+
+.winText[b-2zxknl2shk] {
+    color: lawngreen
+}

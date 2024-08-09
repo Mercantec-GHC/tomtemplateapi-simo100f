@@ -1,0 +1,138 @@
+﻿@page "/Country game"
+@rendermode InteractiveServer
+
+<PageTitle>Country game</PageTitle>
+
+<h1>Guess the flag by country</h1>
+
+@if (gameOver)
+{
+    <div class="gameover">
+        <p class="@gameOverCSS">@((MarkupString)gameOverText)</p>
+    </div>
+}
+
+@if (rightCountry != null)
+{
+    <div class="game">
+        <div class="header">
+            <p>@rightCountry.name.common</p>
+        </div>
+        <div class="optionBox">
+            <button class="optionLeft" @onclick="(() => winCheck(0))">
+                <p>@flagOptions[0]</p>
+            </button>
+            <button class="optionRight" @onclick="(() => winCheck(1))">
+                <p>@flagOptions[1]</p>
+            </button>
+        </div>
+        <div class="optionBox">
+            <button class='optionLeft' @onclick="(() => winCheck(2))">
+                <p>@flagOptions[2]</p>
+            </button>
+            <button class="optionRight" @onclick="(() => winCheck(3))">
+                <p>@flagOptions[3]</p>
+            </button>
+        </div>
+    </div>
+}
+
+@if (countries != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Flag</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var country in countries)
+            {
+                <tr>
+                    <td>@country.name.common</td>
+                    <td style="font-size: 100px">@country.flag</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+<h1> guess the country by flag </h1>
+
+@code {
+    private List<Root>? countries;
+    private List<string> flagOptions = new List<string>();
+
+    private Root rightCountry;
+
+    public HttpClient client = new HttpClient();
+
+    private int countryIndex;
+
+    Random randIndex = new Random();
+
+    private bool gameOver = false;
+
+    private string gameOverText = "";
+
+    string gameOverCSS = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        string countryUrl = "https://restcountries.com/v3.1/all?fields=name,flag";
+
+        countries = await client.GetFromJsonAsync<List<Root>>(countryUrl);
+
+        countryIndex = randIndex.Next(0, countries.Count);
+
+        rightCountry = countries[countryIndex];
+
+        flagOptions.Add(rightCountry.flag);
+
+        while (flagOptions.Count < 4)
+        {
+            countryIndex = randIndex.Next(0, countries.Count);
+
+            Root countryToAdd = countries[countryIndex];
+
+            if (flagOptions.Contains(countryToAdd.flag) == false)
+            {
+                flagOptions.Add(countryToAdd.flag);
+            }
+        }
+    }
+
+    public void winCheck(int index)
+    {
+        if(flagOptions[index] == rightCountry.flag)
+        {
+            gameOverText = "YOU WIN";
+            gameOver = true;
+            gameOverCSS = "winText";
+        }
+        else
+        {
+            gameOverText = $"YOU LOSE <br> THE CORRECT ANSWER WAS: {rightCountry.flag}";
+            gameOver = true;
+            gameOverCSS = "lossText";
+        }
+    }
+
+    public class Name
+    {
+        public string common { get; set; }
+    }
+
+    public class Root
+    {
+        public Name name { get; set; }
+        public string flag { get; set; }
+    }
+
+
+}
